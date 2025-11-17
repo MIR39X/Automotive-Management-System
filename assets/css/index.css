@@ -1,0 +1,171 @@
+/* index.css - scoped to #front-page so it won't affect other pages */
+
+/* strong namespace */
+#front-page { --card-bg: #ffffff; --muted: #6b7280; --accent: #0b73ff; --accent-2: #0a63e6; }
+
+#front-page .grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:20px;
+}
+
+/* vehicle card base */
+#front-page .vehicle-card {
+  background: linear-gradient(180deg, #e7e6e6 0%, #eae8e8 100%);
+  border:1px solid rgba(18, 19, 20, 0.06);
+  border-radius:12px;
+  overflow:visible;
+  padding:12px;
+  box-shadow: 0 6px 18px rgba(16,24,40,0.04);
+  transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s ease, border-color .28s ease;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+/* slight accent band on top (different color for visual variety) */
+#front-page .vehicle-card::before{
+  content: "";
+  height:6px;
+  width:64px;
+  display:block;
+  /* background: linear-gradient(90deg,var(--accent),var(--accent-2)); */
+  border-radius:6px;
+  margin-bottom:6px;
+  opacity:0.95;
+}
+
+
+/* image area and overlay */
+#front-page .v-image {
+  height:160px;
+  border-radius:8px;
+  overflow:hidden;
+  background:#fbfdff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  border:1px solid rgba(31, 92, 196, 0.03);
+}
+
+/* image zoom effect */
+#front-page .v-image img {
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  transition: transform .6s ease;
+  transform-origin:center center;
+}
+
+/* overlay that appears on hover */
+#front-page .overlay {
+  position:absolute;
+  inset:0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 20%, rgba(0,0,0,0.45) 100%);
+  opacity:0;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  padding:16px;
+  transition:opacity .25s ease;
+  pointer-events:none;
+}
+/* single button */
+#front-page .overlay a.view-btn {
+  background:white;
+  color:#0b73ff;
+  padding:10px 16px;
+  border-radius:8px;
+  font-weight:700;
+  text-decoration:none;
+  box-shadow:0 4px 16px rgba(0,0,0,0.15);
+  transform:translateY(10px);
+  opacity:0;
+  pointer-events:auto;
+  transition: all .25s ease;
+  font-size:14px;
+}
+
+/* hover reveal */
+#front-page .vehicle-card:hover .overlay {
+  opacity:4;
+}
+
+#front-page .vehicle-card:hover .overlay a.view-btn {
+  transform:translateY(0);
+  opacity:1;
+}
+
+
+/* overlay content (buttons) */
+#front-page .overlay .cta {
+  pointer-events:auto;
+  display:flex;
+  gap:10px;
+  margin-bottom:8px;
+}
+#front-page .overlay .cta a {
+  padding:8px 12px;
+  border-radius:8px;
+  font-weight:700;
+  text-decoration:none;
+  color:white;
+  font-size:13px;
+  background:rgba(11,115,255,0.95);
+  box-shadow:0 8px 18px rgba(11,115,255,0.12);
+  transform:translateY(8px);
+  opacity:0;
+  transition:transform .28s cubic-bezier(.2,.9,.2,1), opacity .28s ease;
+}
+
+/* secondary CTA */
+#front-page .overlay .cta a.secondary {
+  background:rgba(255,255,255,0.95);
+  color:#0b73ff;
+  border:1px solid rgba(11,115,255,0.12);
+  box-shadow:none;
+}
+
+/* card footer details */
+#front-page .card-body { display:flex;flex-direction:column; gap:8px; padding:4px 2px; }
+#front-page .title { font-weight:700; color:#0f1724; font-size:16px; }
+#front-page .meta { color:var(--muted); font-size:13px; }
+
+/* status pill */
+#front-page .status {
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:13px;
+  color:var(--muted);
+  background:#f8fafc;
+  border:1px solid #eef2ff;
+}
+
+/* hover behaviour on the card */
+#front-page .vehicle-card:hover {
+  transform:translateY(-8px) scale(1.01);
+  box-shadow: 0 20px 40px rgba(16,24,40,0.10);
+  border-color: rgba(11,115,255,0.08);
+}
+
+/* reveal overlay & zoom image & animate CTAs */
+#front-page .vehicle-card:hover .overlay {
+  opacity:1;
+}
+#front-page .vehicle-card:hover .v-image img {
+  transform: scale(1.06);
+}
+#front-page .vehicle-card:hover .overlay .cta a {
+  transform:translateY(0);
+  opacity:1;
+}
+
+/* small responsive tweak */
+@media (max-width:480px){
+  #front-page .v-image { height:140px; }
+  #front-page .overlay .cta { gap:8px; }
+  #front-page .overlay .cta a { font-size:12px; padding:7px 10px; }
+}
