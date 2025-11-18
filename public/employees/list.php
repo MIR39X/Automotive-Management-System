@@ -3,42 +3,160 @@ require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/header.php';
 
 $rows = $pdo->query("SELECT id, name, cnic, salary, role, phone, hire_date FROM employee ORDER BY created_at DESC")->fetchAll();
+$totalEmployees = count($rows);
+$averageSalary = $totalEmployees ? array_sum(array_column($rows, 'salary')) / $totalEmployees : 0;
+$recentHire = $totalEmployees ? $rows[0]['hire_date'] : null;
+
+function formatDateValue(?string $value): string {
+  if (!$value) return 'Not set';
+  $timestamp = strtotime($value);
+  return $timestamp ? date('M j, Y', $timestamp) : htmlspecialchars($value);
+}
 ?>
-<div class="page-hero" style="display:flex;align-items:center;justify-content:space-between;background-color:#f3f4f6;padding:20px;border-radius:8px">
-  <h2 style="margin:0;color:#111827">Employees</h2>
-  <a class="btn" href="add.php" style="background-color:#2563eb;color:#fff;padding:10px 20px;border-radius:5px;text-decoration:none">+ Add employee</a>
+
+<style>
+  .employee-hero {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    padding:24px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#eff6ff,#ede9fe);
+    border:1px solid #dbeafe;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+  .employee-hero h2 {
+    margin:0;
+    font-size:30px;
+    color:#0f172a;
+  }
+  .employee-hero p {
+    margin:6px 0 0;
+    color:#475569;
+  }
+  .employee-hero .btn {
+    background:#2563eb;
+    color:#fff;
+    padding:10px 20px;
+    border-radius:5px;
+    text-decoration:none;
+    border:none;
+  }
+  .employee-summary {
+    margin-top:24px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+  }
+  .employee-summary .card {
+    border:1px solid #e2e8f0;
+    border-radius:12px;
+    padding:16px;
+    background:#fff;
+    box-shadow:0 8px 30px rgba(15,23,42,0.05);
+  }
+  .employee-summary .label {
+    font-size:12px;
+    color:#64748b;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+  }
+  .employee-summary .value {
+    display:block;
+    margin-top:6px;
+    font-size:22px;
+    font-weight:600;
+    color:#0f172a;
+  }
+  .employee-table {
+    margin-top:24px;
+    border-radius:16px;
+    border:1px solid #e2e8f0;
+    overflow:hidden;
+    box-shadow:0 10px 40px rgba(15,23,42,0.05);
+  }
+  .employee-table table {
+    width:100%;
+    border-collapse:collapse;
+  }
+  .employee-table thead {
+    background:#f8fafc;
+  }
+  .employee-table th,
+  .employee-table td {
+    padding:14px 16px;
+    text-align:left;
+  }
+  .employee-table tbody tr {
+    border-top:1px solid #f1f5f9;
+  }
+  .employee-actions a {
+    margin-right:10px;
+    color:#2563eb;
+    text-decoration:none;
+    font-weight:500;
+  }
+  .employee-actions a.delete {
+    color:#dc2626;
+  }
+</style>
+
+<div class="employee-hero">
+  <div>
+    <h2>Employees</h2>
+    <p><?=$totalEmployees?> team members in the system</p>
+  </div>
+  <a class="btn" href="add.php">+ Add employee</a>
 </div>
 
-<div class="card" style="margin-top:20px;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden">
-  <table class="table" style="width:100%;border-collapse:collapse">
-    <thead style="background-color:#f9fafb;border-bottom:2px solid #e5e7eb">
+<div class="employee-summary">
+  <div class="card">
+    <span class="label">Total Employees</span>
+    <span class="value"><?=$totalEmployees?></span>
+  </div>
+  <div class="card">
+    <span class="label">Average Salary</span>
+    <span class="value">$<?=number_format($averageSalary, 2)?></span>
+  </div>
+  <div class="card">
+    <span class="label">Last Hire Date</span>
+    <span class="value"><?=formatDateValue($recentHire)?></span>
+  </div>
+</div>
+
+<div class="employee-table">
+  <table role="table">
+    <thead>
       <tr>
-        <th style="padding:10px;text-align:left;color:#6b7280">ID</th>
-        <th style="padding:10px;text-align:left;color:#6b7280">Name</th>
-        <th style="padding:10px;text-align:left;color:#6b7280">CNIC</th>
-        <th style="padding:10px;text-align:left;color:#6b7280">Salary</th>
-        <th style="padding:10px;text-align:left;color:#6b7280">Role</th>
-        <th style="padding:10px;text-align:left;color:#6b7280">Phone</th>
-        <th style="padding:10px;text-align:left;color:#6b7280">Hire Date</th>
-        <th style="padding:10px;text-align:left;color:#6b7280">Actions</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>CNIC</th>
+        <th>Salary</th>
+        <th>Role</th>
+        <th>Phone</th>
+        <th>Hire Date</th>
+        <th style="text-align:right">Actions</th>
       </tr>
     </thead>
     <tbody>
       <?php if (empty($rows)): ?>
-        <tr><td colspan="8" style="text-align:center;color:#6b7280;padding:18px">No employees yet.</td></tr>
+        <tr><td colspan="8" style="text-align:center;color:#94a3b8;padding:20px">No employees yet.</td></tr>
       <?php endif; ?>
       <?php foreach ($rows as $r): ?>
-        <tr style="border-bottom:1px solid #e5e7eb">
-          <td style="padding:10px;color:#111827"><?=htmlspecialchars($r['id'])?></td>
-          <td style="padding:10px;color:#111827"><a href="view.php?id=<?=$r['id']?>" style="color:#2563eb;text-decoration:none"><?=htmlspecialchars($r['name'])?></a></td>
-          <td style="padding:10px;color:#111827"><?=htmlspecialchars($r['cnic'])?></td>
-          <td style="padding:10px;color:#111827"><?=htmlspecialchars($r['salary'])?></td>
-          <td style="padding:10px;color:#111827"><?=htmlspecialchars($r['role'])?></td>
-          <td style="padding:10px;color:#111827"><?=htmlspecialchars($r['phone'])?></td>
-          <td style="padding:10px;color:#111827"><?=htmlspecialchars($r['hire_date'])?></td>
-          <td style="padding:10px;color:#2563eb">
-            <a href="edit.php?id=<?=$r['id']?>" style="margin-right:10px;color:#2563eb;text-decoration:none">Edit</a>
-            <a class="delete" href="delete.php?id=<?=$r['id']?>" onclick="return confirm('Delete this employee?')" style="color:#dc2626;text-decoration:none">Delete</a>
+        <tr>
+          <td>#<?=htmlspecialchars($r['id'])?></td>
+          <td style="font-weight:600;color:#0f172a;">
+            <a href="view.php?id=<?=$r['id']?>" style="color:#2563eb;text-decoration:none"><?=htmlspecialchars($r['name'])?></a>
+          </td>
+          <td><?=htmlspecialchars($r['cnic'])?></td>
+          <td>$<?=number_format($r['salary'], 2)?></td>
+          <td><?=htmlspecialchars($r['role'])?></td>
+          <td><?=htmlspecialchars($r['phone'])?></td>
+          <td><?=formatDateValue($r['hire_date'])?></td>
+          <td class="employee-actions" style="text-align:right;">
+            <a href="edit.php?id=<?=$r['id']?>">Edit</a>
+            <a class="delete" href="delete.php?id=<?=$r['id']?>" onclick="return confirm('Delete this employee?')">Delete</a>
           </td>
         </tr>
       <?php endforeach; ?>
