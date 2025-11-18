@@ -13,3 +13,31 @@ try {
 } catch (PDOException $e) {
   die("DB error: " . $e->getMessage());
 }
+
+try {
+  $pdo->exec("ALTER TABLE customer ADD COLUMN notes TEXT NULL");
+} catch (PDOException $e) {
+  // Handle the case where the column already exists or other errors
+}
+
+try {
+  $pdo->exec("CREATE TABLE IF NOT EXISTS purchase (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    vehicle_id INT DEFAULT NULL,
+    inventory_id INT DEFAULT NULL,
+    qty INT NOT NULL,
+    unit_price DECIMAL(10,2) NOT NULL,
+    discount_amount DECIMAL(10,2) DEFAULT 0,
+    coupon_id INT DEFAULT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    notes TEXT DEFAULT NULL,
+    FOREIGN KEY (customer_id) REFERENCES customer(id),
+    FOREIGN KEY (vehicle_id) REFERENCES vehicle(id),
+    FOREIGN KEY (inventory_id) REFERENCES inventory(id),
+    FOREIGN KEY (coupon_id) REFERENCES coupon(id)
+  ) ENGINE=InnoDB;");
+} catch (PDOException $e) {
+  // Handle errors, such as table already existing
+}

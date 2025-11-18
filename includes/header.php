@@ -23,8 +23,8 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         </div>
         <nav class="nav" aria-label="Main navigation" style="margin-left:auto">
           <a href="<?= $base ?>/public/index.php" class="<?= $currentPage === 'index.php' ? 'active' : '' ?>">Home</a>
-          <a href="<?= $base ?>/public/vehicles/list.php" class="<?= $currentPage === 'list.php' ? 'active' : '' ?>">Vehicles</a>
-          <a href="<?= $base ?>/public/customers/list.php" class="<?= $currentPage === 'customers.php' ? 'active' : '' ?>">Customers</a>
+          <a href="<?= $base ?>/public/vehicles/list.php" class="<?= $currentPage === 'list.php' && strpos($_SERVER['REQUEST_URI'], 'vehicles') !== false ? 'active' : '' ?>">Vehicles</a>
+          <a href="<?= $base ?>/public/customers/list.php" class="<?= strpos($_SERVER['REQUEST_URI'], 'customers') !== false ? 'active' : '' ?>">Customers</a>
           <a href="<?= $base ?>/public/sales/list.php" class="<?= $currentPage === 'sales.php' ? 'active' : '' ?>">Sales</a>
           <a href="<?= $base ?>/public/maintenance/list.php" class="<?= $currentPage === 'maintenance.php' ? 'active' : '' ?>">Maintenance</a>
           <a href="<?= $base ?>/public/login.php" class="<?= $currentPage === 'login.php' ? 'active' : '' ?>">Login</a>
