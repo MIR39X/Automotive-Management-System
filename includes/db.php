@@ -41,3 +41,17 @@ try {
 } catch (PDOException $e) {
   // Handle errors, such as table already existing
 }
+
+try {
+  $pdo->exec("CREATE TABLE IF NOT EXISTS employee (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    cnic VARCHAR(15) NOT NULL,
+    role VARCHAR(255) NOT NULL,
+    phone VARCHAR(15) NOT NULL,
+    hire_date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  ) ENGINE=InnoDB;");
+} catch (PDOException $e) {
+  // Handle errors, such as table already existing
+}
