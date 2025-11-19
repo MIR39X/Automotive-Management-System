@@ -178,6 +178,12 @@ function formatCurrency($value): string {
         <tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:20px">No vehicles yet.</td></tr>
       <?php endif; ?>
       <?php foreach ($rows as $r): ?>
+        <?php
+          $vehicleLabel = trim(($r['brand'] ?? '') . ' ' . ($r['model'] ?? ''));
+          $confirmMessage = $vehicleLabel !== ''
+            ? "Delete {$vehicleLabel}? This action cannot be undone."
+            : "Delete this vehicle? This action cannot be undone.";
+        ?>
         <tr>
           <td>#<?=htmlspecialchars($r['id'])?></td>
           <td>
@@ -204,7 +210,16 @@ function formatCurrency($value): string {
           <td class="vehicle-actions" style="text-align:right;">
             <a href="view.php?id=<?=$r['id']?>">View</a>
             <a href="edit.php?id=<?=$r['id']?>">Edit</a>
-            <a class="delete" href="delete.php?id=<?=$r['id']?>" onclick="return confirm('Delete this vehicle?')">Delete</a>
+            <a
+              class="delete"
+              href="delete.php?id=<?=$r['id']?>"
+              data-confirm="<?=htmlspecialchars($confirmMessage, ENT_QUOTES)?>"
+              data-confirm-title="Remove vehicle"
+              data-confirm-cta="Delete"
+              data-confirm-style="danger"
+            >
+              Delete
+            </a>
           </td>
         </tr>
       <?php endforeach; ?>
@@ -213,7 +228,6 @@ function formatCurrency($value): string {
 </div>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
-
 
 
 

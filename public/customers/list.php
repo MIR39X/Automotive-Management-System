@@ -230,6 +230,10 @@ function formatDateValue(?string $value): string {
             if (!empty($r['email'])) $contact[] = htmlspecialchars($r['email']);
             if (!empty($r['phone'])) $contact[] = htmlspecialchars($r['phone']);
             $contactInfo = empty($contact) ? '<span style="color:#cbd5f5">No contact info</span>' : implode(' &middot; ', $contact);
+            $customerName = trim($r['name'] ?? '');
+            $confirmCopy = $customerName !== ''
+              ? "Remove {$customerName}? This will permanently delete their record."
+              : "Delete this customer? This will permanently delete their record.";
           ?>
           <tr>
             <td data-label="Customer">
@@ -249,7 +253,16 @@ function formatDateValue(?string $value): string {
             <td class="customer-actions" data-label="Actions" style="text-align:right;">
               <a href="view.php?id=<?=$r['id']?>">View</a>
               <a href="edit.php?id=<?=$r['id']?>">Edit</a>
-              <a class="delete" href="delete.php?id=<?=$r['id']?>" onclick="return confirm('Delete this customer?')">Delete</a>
+              <a
+                class="delete"
+                href="delete.php?id=<?=$r['id']?>"
+                data-confirm="<?=htmlspecialchars($confirmCopy, ENT_QUOTES)?>"
+                data-confirm-title="Delete customer"
+                data-confirm-cta="Delete"
+                data-confirm-style="danger"
+              >
+                Delete
+              </a>
             </td>
           </tr>
         <?php endforeach; ?>
@@ -259,7 +272,6 @@ function formatDateValue(?string $value): string {
 </div>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
-
 
 
 

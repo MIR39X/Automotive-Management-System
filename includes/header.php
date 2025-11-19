@@ -77,6 +77,97 @@ if (!empty($requireAuth) && !$isAuthenticated) {
         justify-content:center;
       }
     }
+    .confirm-overlay {
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:rgba(15,23,42,0.65);
+      z-index:999;
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      transition:opacity 0.25s ease, visibility 0.25s ease;
+    }
+    .confirm-overlay.is-visible {
+      opacity:1;
+      visibility:visible;
+      pointer-events:auto;
+    }
+    .confirm-dialog {
+      width:100%;
+      max-width:430px;
+      background:#fff;
+      border-radius:24px;
+      padding:26px;
+      box-shadow:0 30px 90px rgba(15,23,42,0.25);
+      transform:translateY(18px) scale(0.97);
+      transition:transform 0.26s cubic-bezier(.22,.72,.23,1);
+    }
+    .confirm-overlay.is-visible .confirm-dialog {
+      transform:translateY(0) scale(1);
+    }
+    .confirm-eyebrow {
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      font-size:12px;
+      color:#94a3b8;
+      margin:0 0 8px;
+    }
+    .confirm-title {
+      margin:0;
+      font-size:24px;
+      color:#0f172a;
+    }
+    .confirm-body {
+      margin:12px 0 0;
+      color:#475569;
+      line-height:1.5;
+    }
+    .confirm-actions {
+      margin-top:24px;
+      display:flex;
+      justify-content:flex-end;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .confirm-btn {
+      border:none;
+      border-radius:12px;
+      padding:11px 20px;
+      font-weight:600;
+      cursor:pointer;
+      font-size:15px;
+      transition:transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .confirm-btn:focus-visible {
+      outline:3px solid rgba(59,130,246,0.4);
+      outline-offset:2px;
+    }
+    .confirm-btn.secondary {
+      background:#f1f5f9;
+      color:#0f172a;
+    }
+    .confirm-btn.primary {
+      background:#2563eb;
+      color:#fff;
+      box-shadow:0 14px 35px rgba(37,99,235,0.25);
+    }
+    .confirm-btn.primary:hover {
+      transform:translateY(-1px);
+    }
+    .confirm-dialog.is-danger .confirm-eyebrow {
+      color:#fb923c;
+    }
+    .confirm-dialog.is-danger .confirm-title {
+      color:#b45309;
+    }
+    .confirm-dialog.is-danger .confirm-btn.primary {
+      background:#dc2626;
+      box-shadow:0 14px 35px rgba(220,38,38,0.35);
+    }
   </style>
 </head>
 <body>

@@ -20,6 +20,11 @@ if (!$employee) {
   exit;
 }
 
+$employeeName = trim($employee['name'] ?? '');
+$employeeConfirm = $employeeName !== ''
+  ? "Remove {$employeeName}? Their profile and history will be deleted."
+  : "Delete this employee? Their profile and history will be deleted.";
+
 function formatValue(?string $value, string $fallback = 'Not provided'): string {
   if ($value === null) return $fallback;
   $trimmed = trim((string)$value);
@@ -208,13 +213,19 @@ function formatCurrencyValue($value, string $fallback = 'Not set'): string {
 </div>
 
 <div style="margin-top:18px">
-  <a class="action-delete" href="delete.php?id=<?=$employee['id']?>" onclick="return confirm('Delete this employee?')">
+  <a
+    class="action-delete"
+    href="delete.php?id=<?=$employee['id']?>"
+    data-confirm="<?=htmlspecialchars($employeeConfirm, ENT_QUOTES)?>"
+    data-confirm-title="Delete employee"
+    data-confirm-cta="Delete"
+    data-confirm-style="danger"
+  >
     Delete employee
   </a>
 </div>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
-
 
 
 

@@ -147,6 +147,12 @@ function formatDateValue(?string $value): string {
         <tr><td colspan="8" style="text-align:center;color:#94a3b8;padding:20px">No employees yet.</td></tr>
       <?php endif; ?>
       <?php foreach ($rows as $r): ?>
+        <?php
+          $employeeName = trim($r['name'] ?? '');
+          $employeeConfirm = $employeeName !== ''
+            ? "Remove {$employeeName}? Their profile and history will be deleted."
+            : "Delete this employee? Their profile and history will be deleted.";
+        ?>
         <tr>
           <td>#<?=htmlspecialchars($r['id'])?></td>
           <td style="font-weight:600;color:#0f172a;">
@@ -159,7 +165,16 @@ function formatDateValue(?string $value): string {
           <td><?=formatDateValue($r['hire_date'])?></td>
           <td class="employee-actions" style="text-align:right;">
             <a href="edit.php?id=<?=$r['id']?>">Edit</a>
-            <a class="delete" href="delete.php?id=<?=$r['id']?>" onclick="return confirm('Delete this employee?')">Delete</a>
+            <a
+              class="delete"
+              href="delete.php?id=<?=$r['id']?>"
+              data-confirm="<?=htmlspecialchars($employeeConfirm, ENT_QUOTES)?>"
+              data-confirm-title="Delete employee"
+              data-confirm-cta="Delete"
+              data-confirm-style="danger"
+            >
+              Delete
+            </a>
           </td>
         </tr>
       <?php endforeach; ?>
@@ -168,7 +183,6 @@ function formatDateValue(?string $value): string {
 </div>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
-
 
 
 
