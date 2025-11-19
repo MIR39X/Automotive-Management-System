@@ -1,5 +1,8 @@
 <?php
 require_once __DIR__ . '/../../includes/db.php';
+$requireAuth = true;
+require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/header.php';
 
 $id = intval($_GET['id'] ?? 0);
@@ -32,25 +35,150 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $_POST = $c;
 }
 ?>
-<div class="page-hero" style="display:flex;align-items:center;justify-content:space-between">
-  <h2>Edit customer</h2>
+<style>
+  .customer-hero {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    padding:24px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#eff6ff,#ede9fe);
+    border:1px solid #dbeafe;
+    gap:24px;
+    flex-wrap:wrap;
+    margin-bottom:24px;
+  }
+  .customer-hero h2 { margin:0;font-size:30px;color:#0f172a; }
+  .customer-hero p { margin:6px 0 0;color:#475569; }
+  .customer-hero .btn {
+    background:#2563eb;
+    color:#fff;
+    padding:10px 20px;
+    border-radius:5px;
+    text-decoration:none;
+    border:none;
+  }
+  .customer-card {
+    border-radius:16px;
+    border:1px solid #e2e8f0;
+    background:#fff;
+    padding:24px;
+    box-shadow:0 12px 40px rgba(15,23,42,0.05);
+    margin-bottom:20px;
+  }
+  .customer-card h3 { margin-top:0;color:#0f172a; }
+  .form-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+  }
+  .form-group {
+    display:flex;
+    flex-direction:column;
+  }
+  .form-group label {
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:#94a3b8;
+    margin-bottom:6px;
+  }
+  .form-group input,
+  .form-group textarea {
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #e2e8f0;
+    font-size:15px;
+    color:#0f172a;
+  }
+  .form-group textarea {
+    min-height:120px;
+    resize:vertical;
+  }
+  .form-actions {
+    margin-top:12px;
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .form-actions .btn {
+    background:#2563eb;
+    color:#fff;
+    padding:10px 22px;
+    border-radius:5px;
+    border:none;
+    cursor:pointer;
+  }
+  .form-actions a {
+    padding:10px 22px;
+    border-radius:5px;
+    border:1px solid rgba(37,99,235,0.3);
+    color:#2563eb;
+    text-decoration:none;
+  }
+  .error-box {
+    color:#b91c1c;
+    margin-bottom:14px;
+    padding:12px;
+    border:1px solid #fecdd3;
+    border-radius:10px;
+    background:#fff1f2;
+  }
+</style>
+
+<div class="customer-hero">
+  <div>
+    <h2>Edit Customer</h2>
+    <p>Update contact details and CRM notes.</p>
+  </div>
   <a class="btn" href="view.php?id=<?=$id?>">View profile</a>
 </div>
 
-<div class="card">
-  <?php if (!empty($errors)): ?>
-    <div style="color:#b91c1c;margin-bottom:10px"><?php foreach($errors as $e) echo htmlspecialchars($e).'<br>' ?></div>
-  <?php endif; ?>
+<?php if (!empty($errors)): ?>
+  <div class="error-box">
+    <?php foreach ($errors as $e): ?><?=htmlspecialchars($e) . '<br>'?><?php endforeach; ?>
+  </div>
+<?php endif; ?>
 
-  <form method="post" novalidate>
-    <div class="form-row"><label>Name*</label><input type="text" name="name" required value="<?=htmlspecialchars($_POST['name'] ?? '')?>"></div>
-    <div class="form-row"><label>Phone</label><input type="text" name="phone" value="<?=htmlspecialchars($_POST['phone'] ?? '')?>"></div>
-    <div class="form-row"><label>Email</label><input type="text" name="email" value="<?=htmlspecialchars($_POST['email'] ?? '')?>"></div>
-    <div class="form-row"><label>Address</label><textarea name="address"><?=htmlspecialchars($_POST['address'] ?? '')?></textarea></div>
-    <div class="form-row"><label>Notes</label><textarea name="notes"><?=htmlspecialchars($_POST['notes'] ?? '')?></textarea></div>
+<form method="post" novalidate>
+  <section class="customer-card">
+    <h3>Contact Details</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Name*</label>
+        <input type="text" name="name" required value="<?=htmlspecialchars($_POST['name'] ?? '')?>">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" name="phone" value="<?=htmlspecialchars($_POST['phone'] ?? '')?>">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="text" name="email" value="<?=htmlspecialchars($_POST['email'] ?? '')?>">
+      </div>
+    </div>
+  </section>
 
-    <div style="margin-top:12px"><button class="btn" type="submit">Save changes</button> <a href="view.php?id=<?=$id?>" style="margin-left:10px;color:#6b7280">Cancel</a></div>
-  </form>
-</div>
+  <section class="customer-card">
+    <h3>Address & Notes</h3>
+    <div class="form-group" style="margin-bottom:16px;">
+      <label>Address</label>
+      <textarea name="address"><?=htmlspecialchars($_POST['address'] ?? '')?></textarea>
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea name="notes"><?=htmlspecialchars($_POST['notes'] ?? '')?></textarea>
+    </div>
+  </section>
+
+  <div class="form-actions">
+    <button class="btn" type="submit">Save changes</button>
+    <a href="view.php?id=<?=$id?>">Cancel</a>
+  </div>
+</form>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+
+
+
+

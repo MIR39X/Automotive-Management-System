@@ -1,4 +1,4 @@
-# AMS – Automotive Management System
+# AMS - Automotive Management System
 
 ## Overview
 AMS is a small PHP/MySQL application that runs under a traditional LAMP stack (XAMPP in local development). It exposes a browser-based back office for managing vehicles, customers, employees, and the purchase history that ties those entities together. The codebase is deliberately framework-free: routing is handled with simple PHP files in `public/`, templating is done through shared `header.php` / `footer.php` includes, and styling lives in the `assets/css` folder.
@@ -6,16 +6,17 @@ AMS is a small PHP/MySQL application that runs under a traditional LAMP stack (X
 ## Current Status
 - Vehicles, Customers, and Employees modules are fully wired, with CRUD views and purpose-built dashboards.
 - Customer profiles now include inline purchase recording, coupon validation, inventory adjustments, and lifetime value stats.
-- Vehicle images are uploaded to `assets/uploads/` (5 MB limit) and rendered throughout the site; there is no CDN or S3 dependency.
+- Vehicle images are uploaded to `assets/uploads/` (5 MB limit) and rendered throughout the site; there is no CDN or S3 dependency.
 - Inventory and Coupon records are referenced from the customer purchase forms but must currently be seeded directly in the database (no UI yet).
-- Menu links for **Sales**, **Maintenance**, and **Login** exist in `includes/header.php` as placeholders only—no corresponding pages have been implemented.
+- Session-backed authentication now protects every management screen. Unauthenticated visitors only see the live inventory grid on the landing page; KPIs and admin modules require a login.
+- Menu links for Sales/Maintenance still point to placeholders (no code yet).
 
 ## Features
 ### Vehicle Inventory
 - List, search (via browser find), and drill into vehicles with hero cards, KPIs, and a gallery view.
-- Add/edit forms capture VIN, brand/model, year, status (`available`, `sold`, `service`), price, description, and an optional image with client-side preview and 5 MB server-side validation.
-- Deleting a vehicle removes it from the catalog and exposes the “no vehicles yet” empty state on both the dashboard and landing page.
-- Home page (`public/index.php`) surfaces the full inventory grid for quick demo/showroom viewing.
+- Add/edit forms capture VIN, brand/model, year, status (`available`, `sold`, `service`), price, description, and an optional image with client-side preview and 5 MB server-side validation.
+- Deleting a vehicle removes it from the catalog and exposes the "no vehicles yet" empty state on both the dashboard and landing page.
+- Home page (`public/index.php`) surfaces a live inventory grid; authenticated users also see KPI tiles (total/available/sold/value).
 
 ### Customers & Purchases
 - Customer list offers quick links into a detailed CRM-style profile.
@@ -35,6 +36,8 @@ AMS is a small PHP/MySQL application that runs under a traditional LAMP stack (X
 - `includes/header.php` defines the `$base` path used in all asset and navigation links—update it if you serve the project from a different directory.
 - Global layout and typography sit in `assets/css/style.css`; landing page-specific styles are in `assets/css/index.css`.
 - Database connectivity is centralized in `includes/db.php`, which also performs small boot-time migrations (ensuring `customer.notes`, `purchase`, and `employee` tables exist).
+- The header now boots sessions, exposes `$isAuthenticated`, and enforces `$requireAuth = true` redirection logic. A new `public/login.php`/`logout.php` pair handles the authentication flow (demo credentials: `admin / admin123`).
+- Guests only see the live inventory grid; navigation links for Vehicles/Employees/Customers provide a login prompt until the session is authenticated.
 
 ## Project Structure
 ```
@@ -154,10 +157,12 @@ CREATE TABLE IF NOT EXISTS purchase (
 - Seed at least one inventory item and coupon directly in MySQL if you want to exercise the purchase workflow (there is no admin UI yet).
 - Every customer detail page exposes purchase logging and coupon validation. Deleting a purchase through the UI removes it from the `purchase` table but does not currently roll back inventory or coupon usage counts—handle reversals manually if needed.
 - Vehicle status automatically flips to `sold` when the purchase form links it to a customer. Editing the vehicle later lets you override status back to `available`.
+- Default login credentials live inside `public/login.php` (`admin/admin123`). Update or replace this bootstrap logic if you need stronger authentication.
 
 ## Roadmap / Known Gaps
 - Sales, maintenance, and authentication pages are placeholders only—their navigation links will 404 until those modules are implemented.
 - There are no automated tests or deployment scripts; everything runs directly in PHP.
 - Inventory and coupon CRUD screens would make the purchase flow smoother and reduce the need for direct SQL updates.
+- Guest mode is intentionally limited to the live inventory grid; future iterations may expose additional read-only modules without authentication.
 
 Feel free to open issues or submit pull requests if you extend the application—especially around the missing modules noted above.

@@ -1,5 +1,8 @@
 <?php
 require_once __DIR__ . '/../../includes/db.php';
+$requireAuth = true;
+require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/header.php';
 
 $rows = $pdo->query("SELECT id, name, cnic, salary, role, phone, hire_date FROM employee ORDER BY created_at DESC")->fetchAll();
@@ -165,3 +168,7 @@ function formatDateValue(?string $value): string {
 </div>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+
+
+
+

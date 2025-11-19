@@ -1,5 +1,6 @@
-﻿<?php
+<?php
 require_once __DIR__ . '/../../includes/db.php';
+$requireAuth = true;
 require_once __DIR__ . '/../../includes/header.php';
 
 $id = intval($_GET['id'] ?? 0);
@@ -528,3 +529,9 @@ $lastPurchaseDate = $purchaseCount ? ($purchases[0]['purchase_date'] ?? null) : 
 </section>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+
+
+
+
+
+

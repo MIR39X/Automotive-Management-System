@@ -1,5 +1,6 @@
-﻿<?php
+<?php
 require_once __DIR__ . '/../../includes/db.php';
+$requireAuth = true;
 require_once __DIR__ . '/../../includes/header.php';
 
 $id = intval($_GET['id'] ?? 0);
@@ -171,3 +172,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </form>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+
+
+
+
+
+

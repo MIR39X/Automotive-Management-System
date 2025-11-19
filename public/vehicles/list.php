@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../includes/db.php';
+$requireAuth = true;
 require_once __DIR__ . '/../../includes/header.php';
 
 $rows = $pdo->query("SELECT * FROM vehicle ORDER BY created_at DESC")->fetchAll();
@@ -212,3 +213,9 @@ function formatCurrency($value): string {
 </div>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+
+
+
+
+
+

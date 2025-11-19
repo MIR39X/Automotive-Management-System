@@ -1,5 +1,8 @@
 <?php
 require_once __DIR__ . '/../../includes/db.php';
+$requireAuth = true;
+require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/header.php';
 
 $id = intval($_GET['id'] ?? 0);
@@ -211,3 +214,7 @@ function formatCurrencyValue($value, string $fallback = 'Not set'): string {
 </div>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+
+
+
+
