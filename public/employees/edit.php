@@ -2,48 +2,41 @@
 require_once __DIR__ . '/../../includes/db.php';
 $requireAuth = true;
 require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/header.php';
 
 $id = intval($_GET['id'] ?? 0);
-if (!$id) {
-  header('Location: list.php');
-  exit;
-}
+if (!$id) { header('Location:list.php'); exit; }
 
-$stmt = $pdo->prepare("SELECT * FROM employee WHERE id = ?");
+$stmt = $pdo->prepare("SELECT * FROM customer WHERE id = ?");
 $stmt->execute([$id]);
-$employee = $stmt->fetch();
-if (!$employee) {
-  header('Location: list.php');
-  exit;
-}
+$c = $stmt->fetch();
+if (!$c) { header('Location:list.php'); exit; }
 
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $name = trim($_POST['name'] ?? '');
-  $dob = $_POST['dob'] ?? null;
-  $cnic = trim($_POST['cnic'] ?? '');
-  $hire_date = $_POST['hire_date'] ?? null;
-  $salary = floatval($_POST['salary'] ?? 0);
+  $phone = trim($_POST['phone'] ?? '');
+  $email = trim($_POST['email'] ?? '');
+  $address = trim($_POST['address'] ?? '');
+  $notes = trim($_POST['notes'] ?? '');
 
   if ($name === '') $errors[] = 'Name is required';
-  if ($dob === null) $errors[] = 'Date of birth is required';
-  if ($cnic === '') $errors[] = 'CNIC is required';
-  if ($hire_date === null) $errors[] = 'Hire date is required';
-  if ($salary <= 0) $errors[] = 'Salary must be greater than 0';
+  if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Invalid email';
 
   if (empty($errors)) {
-    $stmt = $pdo->prepare("UPDATE employee SET name=?, dob=?, cnic=?, hire_date=?, salary=? WHERE id=?");
-    $stmt->execute([$name, $dob, $cnic, $hire_date, $salary, $id]);
+    $stmt = $pdo->prepare("UPDATE customer SET name=?, phone=?, email=?, address=?, notes=? WHERE id=?");
+    $stmt->execute([$name, $phone, $email, $address, $notes, $id]);
     header("Location: view.php?id=$id");
     exit;
   }
 } else {
-  $_POST = $employee;
+  // populate POST-values for form
+  $_POST = $c;
 }
 ?>
-
 <style>
-  .employee-hero {
+  .customer-hero {
     display:flex;
     align-items:flex-start;
     justify-content:space-between;
@@ -55,9 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     flex-wrap:wrap;
     margin-bottom:24px;
   }
-  .employee-hero h2 { margin:0;font-size:30px;color:#0f172a; }
-  .employee-hero p { margin:6px 0 0;color:#475569; }
-  .employee-hero .btn {
+  .customer-hero h2 { margin:0;font-size:30px;color:#0f172a; }
+  .customer-hero p { margin:6px 0 0;color:#475569; }
+  .customer-hero .btn {
     background:#2563eb;
     color:#fff;
     padding:10px 20px;
@@ -65,20 +58,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     text-decoration:none;
     border:none;
   }
-  .employee-card {
+  .customer-card {
     border-radius:16px;
     border:1px solid #e2e8f0;
     background:#fff;
     padding:24px;
     box-shadow:0 12px 40px rgba(15,23,42,0.05);
+    margin-bottom:20px;
   }
-  .employee-card h3 { margin-top:0;color:#0f172a; }
+  .customer-card h3 { margin-top:0;color:#0f172a; }
   .form-grid {
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
     gap:16px;
   }
-  .form-group { display:flex;flex-direction:column; }
+  .form-group {
+    display:flex;
+    flex-direction:column;
+  }
   .form-group label {
     font-size:13px;
     text-transform:uppercase;
@@ -86,15 +83,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     color:#94a3b8;
     margin-bottom:6px;
   }
-  .form-group input {
+  .form-group input,
+  .form-group textarea {
     padding:12px;
     border-radius:10px;
     border:1px solid #e2e8f0;
     font-size:15px;
     color:#0f172a;
   }
+  .form-group textarea {
+    min-height:120px;
+    resize:vertical;
+  }
   .form-actions {
-    margin-top:24px;
+    margin-top:12px;
     display:flex;
     gap:12px;
     flex-wrap:wrap;
@@ -124,10 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 </style>
 
-<div class="employee-hero">
+<div class="customer-hero">
   <div>
-    <h2>Edit Employee</h2>
-    <p>Update profile and employment data.</p>
+    <h2>Edit Customer</h2>
+    <p>Update contact details and CRM notes.</p>
   </div>
   <a class="btn" href="view.php?id=<?=$id?>">View profile</a>
 </div>
@@ -139,29 +141,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php endif; ?>
 
 <form method="post" novalidate>
-  <section class="employee-card">
-    <h3>Details</h3>
+  <section class="customer-card">
+    <h3>Contact Details</h3>
     <div class="form-grid">
       <div class="form-group">
         <label>Name*</label>
         <input type="text" name="name" required value="<?=htmlspecialchars($_POST['name'] ?? '')?>">
       </div>
       <div class="form-group">
-        <label>Date of Birth*</label>
-        <input type="date" name="dob" required value="<?=htmlspecialchars($_POST['dob'] ?? '')?>">
+        <label>Phone</label>
+        <input type="text" name="phone" value="<?=htmlspecialchars($_POST['phone'] ?? '')?>">
       </div>
       <div class="form-group">
-        <label>CNIC*</label>
-        <input type="text" name="cnic" required value="<?=htmlspecialchars($_POST['cnic'] ?? '')?>">
+        <label>Email</label>
+        <input type="text" name="email" value="<?=htmlspecialchars($_POST['email'] ?? '')?>">
       </div>
-      <div class="form-group">
-        <label>Hire Date*</label>
-        <input type="date" name="hire_date" required value="<?=htmlspecialchars($_POST['hire_date'] ?? '')?>">
-      </div>
-      <div class="form-group">
-        <label>Salary*</label>
-        <input type="number" name="salary" step="0.01" required value="<?=htmlspecialchars($_POST['salary'] ?? '')?>">
-      </div>
+    </div>
+  </section>
+
+  <section class="customer-card">
+    <h3>Address & Notes</h3>
+    <div class="form-group" style="margin-bottom:16px;">
+      <label>Address</label>
+      <textarea name="address"><?=htmlspecialchars($_POST['address'] ?? '')?></textarea>
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea name="notes"><?=htmlspecialchars($_POST['notes'] ?? '')?></textarea>
     </div>
   </section>
 
@@ -172,9 +178,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </form>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
-
-
-
-
-
-
