@@ -1,10 +1,23 @@
 <?php
 require_once __DIR__ . '/../../includes/db.php';
 $requireAuth = true;
-require_once __DIR__ . '/../../includes/header.php';
-require_once __DIR__ . '/../../includes/db.php';
-require_once __DIR__ . '/../../includes/header.php';
+$base = '/ams_project';
 
+if ($requireAuth) {
+  if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+  if (empty($_SESSION['user'])) {
+    $redirectTarget = $base . '/public/login.php';
+    if (!empty($_SERVER['REQUEST_URI'])) {
+      $redirectTarget .= '?redirect=' . urlencode($_SERVER['REQUEST_URI']);
+    }
+    header("Location: $redirectTarget");
+    exit;
+  }
+}
+
+$errors = [];
 $maxFileSize = 5 * 1024 * 1024; // 5MB
 $uploadDir = __DIR__ . '/../../assets/uploads/';
 
@@ -22,7 +35,6 @@ if (!$row) {
   exit;
 }
 
-$errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $vin   = trim($_POST['vin'] ?? null) ?: null;
   $brand = trim($_POST['brand'] ?? '');
@@ -93,6 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $description = $row['description'];
   $currentImage = $row['image'];
 }
+
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 <style>
   .vehicle-hero {
@@ -325,7 +339,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </script>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
-
-
 
 

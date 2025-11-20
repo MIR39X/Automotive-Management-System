@@ -1,7 +1,21 @@
 <?php
 require_once __DIR__ . '/../../includes/db.php';
 $requireAuth = true;
-require_once __DIR__ . '/../../includes/header.php';
+$base = '/ams_project';
+
+if ($requireAuth) {
+  if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+  if (empty($_SESSION['user'])) {
+    $redirectTarget = $base . '/public/login.php';
+    if (!empty($_SERVER['REQUEST_URI'])) {
+      $redirectTarget .= '?redirect=' . urlencode($_SERVER['REQUEST_URI']);
+    }
+    header("Location: $redirectTarget");
+    exit;
+  }
+}
 
 $id = intval($_GET['id'] ?? 0);
 if (!$id) { header('Location:list.php'); exit; }
@@ -9,7 +23,10 @@ if (!$id) { header('Location:list.php'); exit; }
 $stmt = $pdo->prepare("SELECT * FROM customer WHERE id = ?");
 $stmt->execute([$id]);
 $c = $stmt->fetch();
-if (!$c) { echo '<div class="card">Customer not found</div>'; require_once __DIR__ . '/../../includes/footer.php'; exit; }
+if (!$c) {
+  header('Location:list.php');
+  exit;
+}
 
 // handle quick purchase form submission (basic)
 $errors = [];
@@ -170,6 +187,8 @@ function formatCurrencyValue($value, string $fallback = 'Not set'): string {
 $purchaseCount = count($purchases);
 $totalSpend = array_sum(array_map(function ($p) { return (float)($p['total_amount'] ?? 0); }, $purchases));
 $lastPurchaseDate = $purchaseCount ? ($purchases[0]['purchase_date'] ?? null) : null;
+
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <style>
@@ -529,7 +548,6 @@ $lastPurchaseDate = $purchaseCount ? ($purchases[0]['purchase_date'] ?? null) : 
 </section>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
-
 
 
 

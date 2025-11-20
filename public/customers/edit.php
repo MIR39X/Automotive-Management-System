@@ -1,9 +1,21 @@
 <?php
 require_once __DIR__ . '/../../includes/db.php';
 $requireAuth = true;
-require_once __DIR__ . '/../../includes/header.php';
-require_once __DIR__ . '/../../includes/db.php';
-require_once __DIR__ . '/../../includes/header.php';
+$base = '/ams_project';
+
+if ($requireAuth) {
+  if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+  if (empty($_SESSION['user'])) {
+    $redirectTarget = $base . '/public/login.php';
+    if (!empty($_SERVER['REQUEST_URI'])) {
+      $redirectTarget .= '?redirect=' . urlencode($_SERVER['REQUEST_URI']);
+    }
+    header("Location: $redirectTarget");
+    exit;
+  }
+}
 
 $id = intval($_GET['id'] ?? 0);
 if (!$id) { header('Location:list.php'); exit; }
@@ -14,26 +26,33 @@ $c = $stmt->fetch();
 if (!$c) { header('Location:list.php'); exit; }
 
 $errors = [];
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $name = trim($_POST['name'] ?? '');
-  $phone = trim($_POST['phone'] ?? '');
-  $email = trim($_POST['email'] ?? '');
-  $address = trim($_POST['address'] ?? '');
-  $notes = trim($_POST['notes'] ?? '');
+$form = [
+  'name' => $c['name'] ?? '',
+  'phone' => $c['phone'] ?? '',
+  'email' => $c['email'] ?? '',
+  'address' => $c['address'] ?? '',
+  'notes' => $c['notes'] ?? '',
+];
 
-  if ($name === '') $errors[] = 'Name is required';
-  if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Invalid email';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $form['name'] = trim($_POST['name'] ?? '');
+  $form['phone'] = trim($_POST['phone'] ?? '');
+  $form['email'] = trim($_POST['email'] ?? '');
+  $form['address'] = trim($_POST['address'] ?? '');
+  $form['notes'] = trim($_POST['notes'] ?? '');
+
+  if ($form['name'] === '') $errors[] = 'Name is required';
+  if ($form['email'] !== '' && !filter_var($form['email'], FILTER_VALIDATE_EMAIL)) $errors[] = 'Invalid email';
 
   if (empty($errors)) {
     $stmt = $pdo->prepare("UPDATE customer SET name=?, phone=?, email=?, address=?, notes=? WHERE id=?");
-    $stmt->execute([$name, $phone, $email, $address, $notes, $id]);
+    $stmt->execute([$form['name'], $form['phone'], $form['email'], $form['address'], $form['notes'], $id]);
     header("Location: view.php?id=$id");
     exit;
   }
-} else {
-  // populate POST-values for form
-  $_POST = $c;
 }
+
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 <style>
   .customer-hero {
@@ -146,15 +165,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="form-grid">
       <div class="form-group">
         <label>Name*</label>
-        <input type="text" name="name" required value="<?=htmlspecialchars($_POST['name'] ?? '')?>">
+        <input type="text" name="name" required value="<?=htmlspecialchars($form['name'])?>">
       </div>
       <div class="form-group">
         <label>Phone</label>
-        <input type="text" name="phone" value="<?=htmlspecialchars($_POST['phone'] ?? '')?>">
+        <input type="text" name="phone" value="<?=htmlspecialchars($form['phone'])?>">
       </div>
       <div class="form-group">
         <label>Email</label>
-        <input type="text" name="email" value="<?=htmlspecialchars($_POST['email'] ?? '')?>">
+        <input type="text" name="email" value="<?=htmlspecialchars($form['email'])?>">
       </div>
     </div>
   </section>
@@ -163,11 +182,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h3>Address & Notes</h3>
     <div class="form-group" style="margin-bottom:16px;">
       <label>Address</label>
-      <textarea name="address"><?=htmlspecialchars($_POST['address'] ?? '')?></textarea>
+      <textarea name="address"><?=htmlspecialchars($form['address'])?></textarea>
     </div>
     <div class="form-group">
       <label>Notes</label>
-      <textarea name="notes"><?=htmlspecialchars($_POST['notes'] ?? '')?></textarea>
+      <textarea name="notes"><?=htmlspecialchars($form['notes'])?></textarea>
     </div>
   </section>
 
@@ -178,7 +197,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </form>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
-
-
-
 

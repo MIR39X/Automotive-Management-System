@@ -1,11 +1,28 @@
 <?php
 require_once __DIR__ . '/../../includes/db.php';
 $requireAuth = true;
-require_once __DIR__ . '/../../includes/header.php';
+$base = '/ams_project';
+
+if ($requireAuth) {
+  if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+  if (empty($_SESSION['user'])) {
+    $redirectTarget = $base . '/public/login.php';
+    if (!empty($_SERVER['REQUEST_URI'])) {
+      $redirectTarget .= '?redirect=' . urlencode($_SERVER['REQUEST_URI']);
+    }
+    header("Location: $redirectTarget");
+    exit;
+  }
+}
 
 $errors = [];
 $maxFileSize = 5 * 1024 * 1024; // 5 MB
 $uploadDir = __DIR__ . '/../../assets/uploads/';
+$vin = $brand = $model = $description = '';
+$year = null;
+$price = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -13,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $brand = trim($_POST['brand'] ?? '');
   $model = trim($_POST['model'] ?? '');
   $year  = intval($_POST['year'] ?? 0) ?: null;
-  $price = floatval($_POST['price'] ?? 0);
+  $price = $_POST['price'] !== '' ? floatval($_POST['price']) : null;
   $description = trim($_POST['description'] ?? '');
   $imageName = null;
 
@@ -69,6 +86,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 }
+
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <style>
@@ -201,29 +220,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="form-grid">
         <div class="form-group">
           <label>VIN</label>
-          <input type="text" name="vin" value="<?=isset($vin) ? htmlspecialchars($vin) : ''?>">
+          <input type="text" name="vin" value="<?= $vin !== null ? htmlspecialchars($vin) : '' ?>">
         </div>
         <div class="form-group">
           <label>Brand*</label>
-          <input type="text" name="brand" required value="<?=isset($brand) ? htmlspecialchars($brand) : ''?>">
+          <input type="text" name="brand" required value="<?=htmlspecialchars($brand ?? '')?>">
         </div>
         <div class="form-group">
           <label>Model*</label>
-          <input type="text" name="model" required value="<?=isset($model) ? htmlspecialchars($model) : ''?>">
+          <input type="text" name="model" required value="<?=htmlspecialchars($model ?? '')?>">
         </div>
         <div class="form-group">
           <label>Year</label>
-          <input type="number" name="year" min="1900" max="2099" value="<?=isset($year) ? htmlspecialchars($year) : ''?>">
+          <input type="number" name="year" min="1900" max="2099" value="<?= $year !== null ? htmlspecialchars($year) : '' ?>">
         </div>
         <div class="form-group">
           <label>Price</label>
-          <input type="number" name="price" step="0.01" value="<?=isset($price) ? htmlspecialchars($price) : ''?>">
+          <input type="number" name="price" step="0.01" value="<?= $price !== null ? htmlspecialchars($price) : '' ?>">
         </div>
       </div>
 
       <div class="form-group" style="margin-top:16px;">
         <label>Description</label>
-        <textarea name="description" rows="4"><?=isset($description) ? htmlspecialchars($description) : ''?></textarea>
+        <textarea name="description" rows="4"><?=htmlspecialchars($description ?? '')?></textarea>
       </div>
     </section>
 
@@ -266,7 +285,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </script>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
-
 
 
 

@@ -10,8 +10,6 @@ if (isset($_SESSION['user'])) {
   exit;
 }
 
-require_once __DIR__ . '/../includes/header.php';
-
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -36,6 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors[] = 'Invalid username or password.';
   }
 }
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <style>

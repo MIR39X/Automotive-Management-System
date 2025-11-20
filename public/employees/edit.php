@@ -1,42 +1,74 @@
 <?php
 require_once __DIR__ . '/../../includes/db.php';
 $requireAuth = true;
-require_once __DIR__ . '/../../includes/header.php';
-require_once __DIR__ . '/../../includes/db.php';
-require_once __DIR__ . '/../../includes/header.php';
+$base = '/ams_project';
+
+if ($requireAuth) {
+  if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+  if (empty($_SESSION['user'])) {
+    $redirectTarget = $base . '/public/login.php';
+    if (!empty($_SERVER['REQUEST_URI'])) {
+      $redirectTarget .= '?redirect=' . urlencode($_SERVER['REQUEST_URI']);
+    }
+    header("Location: $redirectTarget");
+    exit;
+  }
+}
 
 $id = intval($_GET['id'] ?? 0);
-if (!$id) { header('Location:list.php'); exit; }
+if (!$id) {
+  header('Location: list.php');
+  exit;
+}
 
-$stmt = $pdo->prepare("SELECT * FROM customer WHERE id = ?");
+$stmt = $pdo->prepare("SELECT * FROM employee WHERE id = ?");
 $stmt->execute([$id]);
-$c = $stmt->fetch();
-if (!$c) { header('Location:list.php'); exit; }
+$employee = $stmt->fetch();
+if (!$employee) {
+  header('Location: list.php');
+  exit;
+}
 
 $errors = [];
+$name = $employee['name'] ?? '';
+$role = $employee['role'] ?? '';
+$phone = $employee['phone'] ?? '';
+$hire_date = $employee['hire_date'] ?? '';
+$dob = $employee['dob'] ?? '';
+$salary = $employee['salary'] ?? '';
+$cnic = $employee['cnic'] ?? '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $name = trim($_POST['name'] ?? '');
+  $role = trim($_POST['role'] ?? '');
   $phone = trim($_POST['phone'] ?? '');
-  $email = trim($_POST['email'] ?? '');
-  $address = trim($_POST['address'] ?? '');
-  $notes = trim($_POST['notes'] ?? '');
+  $hire_date = $_POST['hire_date'] ?? null;
+  $dob = $_POST['dob'] ?? null;
+  $salary = floatval($_POST['salary'] ?? 0);
+  $cnic = trim($_POST['cnic'] ?? '');
 
   if ($name === '') $errors[] = 'Name is required';
-  if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Invalid email';
+  if ($role === '') $errors[] = 'Role is required';
+  if ($phone === '') $errors[] = 'Phone is required';
+  if ($hire_date === null || $hire_date === '') $errors[] = 'Hire date is required';
+  if ($dob === null || $dob === '') $errors[] = 'Date of birth is required';
+  if ($salary <= 0) $errors[] = 'Salary must be greater than 0';
+  if ($cnic === '') $errors[] = 'CNIC is required';
 
   if (empty($errors)) {
-    $stmt = $pdo->prepare("UPDATE customer SET name=?, phone=?, email=?, address=?, notes=? WHERE id=?");
-    $stmt->execute([$name, $phone, $email, $address, $notes, $id]);
+    $stmt = $pdo->prepare("UPDATE employee SET name = ?, role = ?, phone = ?, hire_date = ?, dob = ?, salary = ?, cnic = ? WHERE id = ?");
+    $stmt->execute([$name, $role, $phone, $hire_date, $dob, $salary, $cnic, $id]);
     header("Location: view.php?id=$id");
     exit;
   }
-} else {
-  // populate POST-values for form
-  $_POST = $c;
 }
+
+require_once __DIR__ . '/../../includes/header.php';
 ?>
 <style>
-  .customer-hero {
+  .employee-hero {
     display:flex;
     align-items:flex-start;
     justify-content:space-between;
@@ -48,9 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     flex-wrap:wrap;
     margin-bottom:24px;
   }
-  .customer-hero h2 { margin:0;font-size:30px;color:#0f172a; }
-  .customer-hero p { margin:6px 0 0;color:#475569; }
-  .customer-hero .btn {
+  .employee-hero h2 { margin:0;font-size:30px;color:#0f172a; }
+  .employee-hero p { margin:6px 0 0;color:#475569; }
+  .employee-hero .btn {
     background:#2563eb;
     color:#fff;
     padding:10px 20px;
@@ -58,24 +90,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     text-decoration:none;
     border:none;
   }
-  .customer-card {
+  .employee-form-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:20px;
+  }
+  .employee-card {
     border-radius:16px;
     border:1px solid #e2e8f0;
     background:#fff;
     padding:24px;
     box-shadow:0 12px 40px rgba(15,23,42,0.05);
-    margin-bottom:20px;
   }
-  .customer-card h3 { margin-top:0;color:#0f172a; }
+  .employee-card h3 { margin-top:0;color:#0f172a; }
   .form-grid {
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
     gap:16px;
   }
-  .form-group {
-    display:flex;
-    flex-direction:column;
-  }
+  .form-group { display:flex;flex-direction:column; }
   .form-group label {
     font-size:13px;
     text-transform:uppercase;
@@ -83,20 +116,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     color:#94a3b8;
     margin-bottom:6px;
   }
-  .form-group input,
-  .form-group textarea {
+  .form-group input {
     padding:12px;
     border-radius:10px;
     border:1px solid #e2e8f0;
     font-size:15px;
     color:#0f172a;
   }
-  .form-group textarea {
-    min-height:120px;
-    resize:vertical;
-  }
   .form-actions {
-    margin-top:12px;
+    margin-top:24px;
     display:flex;
     gap:12px;
     flex-wrap:wrap;
@@ -126,10 +154,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 </style>
 
-<div class="customer-hero">
+<div class="employee-hero">
   <div>
-    <h2>Edit Customer</h2>
-    <p>Update contact details and CRM notes.</p>
+    <h2>Edit Employee</h2>
+    <p>Update employment details and personal info.</p>
   </div>
   <a class="btn" href="view.php?id=<?=$id?>">View profile</a>
 </div>
@@ -141,35 +169,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php endif; ?>
 
 <form method="post" novalidate>
-  <section class="customer-card">
-    <h3>Contact Details</h3>
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Name*</label>
-        <input type="text" name="name" required value="<?=htmlspecialchars($_POST['name'] ?? '')?>">
+  <div class="employee-form-grid">
+    <section class="employee-card">
+      <h3>Personal Information</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Name*</label>
+          <input type="text" name="name" required value="<?=htmlspecialchars($name)?>">
+        </div>
+        <div class="form-group">
+          <label>Date of Birth*</label>
+          <input type="date" name="dob" required value="<?=htmlspecialchars($dob)?>">
+        </div>
+        <div class="form-group">
+          <label>CNIC*</label>
+          <input type="text" name="cnic" required value="<?=htmlspecialchars($cnic)?>">
+        </div>
+        <div class="form-group">
+          <label>Phone*</label>
+          <input type="text" name="phone" required value="<?=htmlspecialchars($phone)?>">
+        </div>
       </div>
-      <div class="form-group">
-        <label>Phone</label>
-        <input type="text" name="phone" value="<?=htmlspecialchars($_POST['phone'] ?? '')?>">
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="text" name="email" value="<?=htmlspecialchars($_POST['email'] ?? '')?>">
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="customer-card">
-    <h3>Address & Notes</h3>
-    <div class="form-group" style="margin-bottom:16px;">
-      <label>Address</label>
-      <textarea name="address"><?=htmlspecialchars($_POST['address'] ?? '')?></textarea>
-    </div>
-    <div class="form-group">
-      <label>Notes</label>
-      <textarea name="notes"><?=htmlspecialchars($_POST['notes'] ?? '')?></textarea>
-    </div>
-  </section>
+    <section class="employee-card">
+      <h3>Employment Details</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Role*</label>
+          <input type="text" name="role" required value="<?=htmlspecialchars($role)?>">
+        </div>
+        <div class="form-group">
+          <label>Hire Date*</label>
+          <input type="date" name="hire_date" required value="<?=htmlspecialchars($hire_date)?>">
+        </div>
+        <div class="form-group">
+          <label>Salary*</label>
+          <input type="number" name="salary" step="0.01" required value="<?=htmlspecialchars($salary)?>">
+        </div>
+      </div>
+    </section>
+  </div>
 
   <div class="form-actions">
     <button class="btn" type="submit">Save changes</button>
