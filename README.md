@@ -9,6 +9,8 @@ AMS is a small PHP/MySQL application that runs under a traditional LAMP stack (X
 - Vehicle images are uploaded to `assets/uploads/` (5 MB limit) and rendered throughout the site; there is no CDN or S3 dependency.
 - Inventory and Coupon records are referenced from the customer purchase forms but must currently be seeded directly in the database (no UI yet).
 - Session-backed authentication now protects every management screen. Unauthenticated visitors only see the live inventory grid on the landing page; KPIs and admin modules require a login.
+- All CRUD endpoints were recently audited so that business logic/redirects execute before the layout renders, eliminating the "headers already sent" warnings that previously appeared after saving or deleting records.
+- Add/edit forms now persist user input when validation fails, reducing the risk of data loss during long sessions.
 - Menu links for Sales/Maintenance still point to placeholders (no code yet).
 
 ## Features
