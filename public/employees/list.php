@@ -13,6 +13,10 @@ function formatDateValue(?string $value): string {
   $timestamp = strtotime($value);
   return $timestamp ? date('M j, Y', $timestamp) : htmlspecialchars($value);
 }
+
+function formatCurrencyValue($value): string {
+  return 'Rs ' . number_format((float)$value, 2);
+}
 ?>
 
 <style>
@@ -118,7 +122,7 @@ function formatDateValue(?string $value): string {
   </div>
   <div class="card">
     <span class="label">Average Salary</span>
-    <span class="value">$<?=number_format($averageSalary, 2)?></span>
+    <span class="value"><?=formatCurrencyValue($averageSalary)?></span>
   </div>
   <div class="card">
     <span class="label">Last Hire Date</span>
@@ -157,7 +161,7 @@ function formatDateValue(?string $value): string {
             <a href="view.php?id=<?=$r['id']?>" style="color:#2563eb;text-decoration:none"><?=htmlspecialchars($r['name'])?></a>
           </td>
           <td><?=htmlspecialchars($r['cnic'])?></td>
-          <td>$<?=number_format($r['salary'], 2)?></td>
+          <td><?=formatCurrencyValue($r['salary'])?></td>
           <td><?=htmlspecialchars($r['role'])?></td>
           <td><?=htmlspecialchars($r['phone'])?></td>
           <td><?=formatDateValue($r['hire_date'])?></td>

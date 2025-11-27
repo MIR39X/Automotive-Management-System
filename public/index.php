@@ -102,7 +102,7 @@ $sold = count(array_filter($vehicles, fn($v) => ($v['status'] ?? '') === 'sold')
 $inventoryValue = array_sum(array_map(fn($v) => (float)($v['price'] ?? 0), $vehicles));
 
 function formatCurrency($value): string {
-  return '$' . number_format((float)$value, 2);
+  return 'Rs ' . number_format((float)$value, 2);
 }
 ?>
 <div id="front-page">

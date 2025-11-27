@@ -5,6 +5,32 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
+// --- Session timeout for better confidentiality ---
+$sessionTimeout = 15 * 60; // 15 minutes in seconds
+
+if (!empty($_SESSION['user'])) {
+    // Pehle se logged-in user hai
+    if (isset($_SESSION['last_activity'])) {
+        $idleTime = time() - $_SESSION['last_activity'];
+
+        if ($idleTime > $sessionTimeout) {
+            // Session idle bahut der se, logout kar do
+            session_unset();
+            session_destroy();
+
+            // Nayi session start karo taake header warning na aaye
+            session_start();
+
+            $message = urlencode('Session expired, please login again.');
+            header('Location: ' . $base . '/public/login.php?message=' . $message);
+            exit;
+        }
+    }
+
+    // Activity update karo
+    $_SESSION['last_activity'] = time();
+}
+
 if (ob_get_level() === 0) {
   ob_start();
 }
@@ -49,10 +75,11 @@ if (!empty($requireAuth) && !$isAuthenticated) {
     .nav {
       margin-left:auto;
       display:flex;
+      flex-wrap:wrap;
       align-items:center;
-      gap:18px;
+      gap:12px;
       background:linear-gradient(145deg,#f8fafc,#eef2ff);
-      padding:10px 18px;
+      padding:8px 14px;
       border-radius:18px;
       border:1px solid #e2e8f0;
       box-shadow:0 10px 25px rgba(15,23,42,0.08);
@@ -61,9 +88,11 @@ if (!empty($requireAuth) && !$isAuthenticated) {
       text-decoration:none;
       color:#475569;
       font-weight:500;
-      padding:8px 12px;
+      font-size:14px;
+      padding:6px 10px;
       border-radius:12px;
       transition:color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      white-space:nowrap;
     }
     .nav a:hover {
       color:#1d4ed8;
@@ -181,7 +210,7 @@ if (!empty($requireAuth) && !$isAuthenticated) {
           <div class="logo-badge" aria-hidden="true">AMS</div>
           <div class="title">
             <div class="brand">AMS - Automotive Management</div>
-            <div class="meta">Simple demo - Local dev</div>
+            <div class="meta">23K2013 - 23K2085</div>
           </div>
         </div>
         <nav class="nav" aria-label="Main navigation">
@@ -190,6 +219,11 @@ if (!empty($requireAuth) && !$isAuthenticated) {
             <a href="<?= $base ?>/public/vehicles/list.php" class="<?= $currentPage === 'list.php' && strpos($_SERVER['REQUEST_URI'], 'vehicles') !== false ? 'active' : '' ?>">Vehicles</a>
             <a href="<?= $base ?>/public/employees/list.php" class="<?= strpos($_SERVER['REQUEST_URI'], 'employees') !== false ? 'active' : '' ?>">Employees</a>
             <a href="<?= $base ?>/public/customers/list.php" class="<?= strpos($_SERVER['REQUEST_URI'], 'customers') !== false ? 'active' : '' ?>">Customers</a>
+            <a href="<?= $base ?>/public/parts/list.php">Parts</a>
+            <a href="<?= $base ?>/public/suppliers/list.php">Suppliers</a>
+            <a href="<?= $base ?>/public/services/list.php">Services</a> 
+            <a href="<?= $base ?>/public/jobcards/list.php">Job Cards</a> 
+            <a href="<?= $base ?>/public/retailsales/list.php">Retail Sales</a> 
             <a href="<?= $base ?>/public/logout.php">Logout</a>
           <?php else: ?>
             <a href="<?= $base ?>/public/login.php" class="<?= $currentPage === 'login.php' ? 'active' : '' ?>">Login</a>

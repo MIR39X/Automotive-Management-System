@@ -181,7 +181,7 @@ function formatDateValue(?string $value, string $fallback = 'Not set'): string {
 
 function formatCurrencyValue($value, string $fallback = 'Not set'): string {
   if ($value === null || $value === '') return $fallback;
-  return '$' . number_format((float)$value, 2);
+  return 'Rs ' . number_format((float)$value, 2);
 }
 
 $purchaseCount = count($purchases);
@@ -381,7 +381,7 @@ require_once __DIR__ . '/../../includes/header.php';
   </div>
   <div class="summary-card">
     <span class="label">Lifetime Spend</span>
-    <span class="value"><?=formatCurrencyValue($totalSpend, '$0.00')?></span>
+    <span class="value"><?=formatCurrencyValue($totalSpend, 'Rs 0.00')?></span>
     <span class="hint">Across all purchases</span>
   </div>
   <div class="summary-card">

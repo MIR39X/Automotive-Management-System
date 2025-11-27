@@ -38,7 +38,7 @@ function formatDateValue(?string $value, string $fallback = 'Not set'): string {
 
 function formatCurrencyValue($value, string $fallback = 'Not set'): string {
   if ($value === null || $value === '') return $fallback;
-  return number_format((float)$value, 2);
+  return 'Rs ' . number_format((float)$value, 2);
 }
 ?>
 
