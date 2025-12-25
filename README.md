@@ -1,7 +1,7 @@
 # AMS - Automotive Management System
 
 > **Course Database Management System Semester Project**  
-> *Developed by 23K2013 - 23K2085*
+> *Developed by Arsalan Mir*
 
 ## 🚗 Executive Summary
 The **Automotive Management System (AMS)** is a comprehensive web-based platform designed to streamline the operations of an automotive business. It unifies vehicle inventory, customer relationship management (CRM), service workshop scheduling, and retail sales into a single, cohesive interface.
