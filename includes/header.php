@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 $sessionTimeout = 15 * 60; // 15 minutes in seconds
 
 if (!empty($_SESSION['user'])) {
-    // Pehle se logged-in user hai
+    
     if (isset($_SESSION['last_activity'])) {
         $idleTime = time() - $_SESSION['last_activity'];
 
@@ -107,7 +107,7 @@ if (!empty($requireAuth) && !$isAuthenticated) {
       .nav {
         flex-wrap:wrap;
         justify-content:center;
-      }
+      } 
     }
     .confirm-overlay {
       position:fixed;

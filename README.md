@@ -11,7 +11,8 @@ AMS is a small PHP/MySQL application that runs under a traditional LAMP stack (X
 - Session-backed authentication now protects every management screen. Unauthenticated visitors only see the live inventory grid on the landing page; KPIs and admin modules require a login.
 - All CRUD endpoints were recently audited so that business logic/redirects execute before the layout renders, eliminating the "headers already sent" warnings that previously appeared after saving or deleting records.
 - Add/edit forms now persist user input when validation fails, reducing the risk of data loss during long sessions.
-- Menu links for Sales/Maintenance still point to placeholders (no code yet).
+- **Expanded Modules**: `Parts`, `Suppliers`, `Services`, `Job Cards`, and `Retail Sales` are now fully implemented with their own CRUD workflows and dashboards.
+
 
 ## Features
 ### Vehicle Inventory
@@ -168,3 +169,7 @@ CREATE TABLE IF NOT EXISTS purchase (
 - Guest mode is intentionally limited to the live inventory grid; future iterations may expose additional read-only modules without authentication.
 
 Feel free to open issues or submit pull requests if you extend the application—especially around the missing modules noted above.
+
+---
+**Note:** This was my Course Database Management System Semester Project.
+
