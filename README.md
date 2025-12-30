@@ -1,7 +1,12 @@
 <div align="center">
 
+<<<<<<< HEAD
 <!-- Banner -->
 <img src="assets/banner.png" alt="AMS Banner" width="100%">
+=======
+> **Course Database Management System Semester Project**  
+> *Developed by Arsalan Mir*
+>>>>>>> 0c166b3058fa94cd3fc6fe344f8d5152fc593128
 
 <!-- Logo & Title -->
 <br>
