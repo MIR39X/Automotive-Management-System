@@ -1,93 +1,320 @@
-# AMS - Automotive Management System
+<div align="center">
 
-> **Course Database Management System Semester Project**  
-> *Developed by 23K2013 - 23K2085*
+<!-- Banner -->
+<img src="assets/banner.png" alt="AMS Banner" width="100%">
 
-## 🚗 Executive Summary
-The **Automotive Management System (AMS)** is a comprehensive web-based platform designed to streamline the operations of an automotive business. It unifies vehicle inventory, customer relationship management (CRM), service workshop scheduling, and retail sales into a single, cohesive interface.
+<!-- Logo & Title -->
+<br>
+<img src="assets/logo.png" alt="AMS Logo" width="150">
 
-Built from the ground up using **Vanilla PHP** and **MySQL**, this project demonstrates a robust implementation of relational database concepts, secure authentication, and a custom MVC-lite architecture without reliance on heavy frameworks.
+# 🚗 Automotive Management System
+
+### *A Modern, Full-Stack Dealership & Workshop Platform*
+
+[![PHP Version](https://img.shields.io/badge/PHP-8.0+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+[![MySQL](https://img.shields.io/badge/MySQL-5.7+-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=for-the-badge)](https://github.com/MIR39X/Automotive-Management-System/pulls)
+
+<br>
+
+[📖 Documentation](#-getting-started) • [🎯 Features](#-core-modules) • [🚀 Quick Start](#-installation) • [📂 Structure](#-project-structure)
 
 ---
 
-## 🌟 Core Modules
+</div>
+
+## � Overview
+
+> **Automotive Management System (AMS)** is a comprehensive web-based platform that streamlines automotive business operations. From vehicle inventory and customer management to workshop scheduling and retail sales — all unified in one sleek interface.
+
+<br>
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><img src="https://img.icons8.com/fluency/48/car.png" width="40"/><br><b>Vehicle<br>Inventory</b></td>
+      <td align="center"><img src="https://img.icons8.com/fluency/48/customer-support.png" width="40"/><br><b>Customer<br>CRM</b></td>
+      <td align="center"><img src="https://img.icons8.com/fluency/48/maintenance.png" width="40"/><br><b>Service<br>Workshop</b></td>
+      <td align="center"><img src="https://img.icons8.com/fluency/48/shopping-cart.png" width="40"/><br><b>Retail<br>Sales</b></td>
+      <td align="center"><img src="https://img.icons8.com/fluency/48/business-report.png" width="40"/><br><b>Analytics<br>Dashboard</b></td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## ✨ Core Modules
+
+<table>
+<tr>
+<td width="50%">
 
 ### 🚘 Inventory & Showroom
-*   **Vehicle Management**: Full lifecycle tracking of vehicles (Acquisition → Available → Sold). Captures detailed specs (VIN, Model, Year) and high-resolution images.
-*   **Parts Inventory**: Manage stock levels for spare parts, track unit prices, and link parts to specific suppliers.
+
+- **Vehicle Lifecycle Tracking**  
+  `Acquisition → Available → Sold`
+- **Detailed Specifications**  
+  VIN, Brand, Model, Year, High-res Images
+- **Parts Inventory**  
+  Stock levels, unit pricing, supplier links
+
+</td>
+<td width="50%">
 
 ### 🛠️ Service Center
-*   **Job Cards**: The heart of the workshop. Track vehicle repairs through customizable statuses (`Open`, `In Progress`, `Completed`, `Closed`). Assign technicians and log date-in/date-out.
-*   **Service Catalog**: Maintain a standardized list of service offerings (e.g., Oil Change, Tuning) with base prices for consistent billing.
+
+- **Digital Job Cards**  
+  `Open → In Progress → Completed → Closed`
+- **Technician Assignment**  
+  Track date-in/date-out workflows
+- **Service Catalog**  
+  Standardized services with base pricing
+
+</td>
+</tr>
+<tr>
+<td width="50%">
 
 ### 💰 Sales & Commerce
-*   **Vehicle Sales**: Streamlined checkout process that handles inventory status updates, customer assignment, and invoice generation.
-*   **Retail Sales**: Point-of-Sale (POS) module for selling loose parts or over-the-counter services directly to walk-in customers.
-*   **Suppliers**: Manage vendor relationships and procurement sources.
+
+- **Vehicle Sales**  
+  Streamlined checkout with auto-invoicing
+- **POS System**  
+  Over-the-counter parts & services
+- **Supplier Management**  
+  Vendor relationships & procurement
+
+</td>
+<td width="50%">
 
 ### 👥 CRM & Administration
-*   **Customer Profiles**: 360-degree view of customers, including their purchase history, contact details, and lifetime value.
-*   **Employee Directory**: HR module to manage staff roles, salaries, and contact information.
-*   **Secure Authentication**: Role-based access control protecting all administrative functions.
+
+- **360° Customer Profiles**  
+  Purchase history, contact info, lifetime value
+- **Employee Directory**  
+  Roles, salaries, HR management
+- **Role-Based Access Control**  
+  Secure authentication system
+
+</td>
+</tr>
+</table>
 
 ---
 
-## ⚙️ Technical Architecture
+## 🏗️ Technical Architecture
 
-*   **Language**: PHP 8.1+ (Strict Typing, PDO for Database Abstraction).
-*   **Database**: MySQL 5.7+ (Relational Schema, Foreign Keys, ACID Compliance).
-*   **Frontend**: HTML5, CSS3 (Custom responsive design), Vanilla JavaScript.
-*   **Architecture**:
-    *   **Security First**: SQL Injection protection via Prepared Statements.
-    *   **Component-Based**: Reusable header/footer templates and asset management.
-    *   **Session Management**: Secure login sessions with inactivity timeouts.
+<div align="center">
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     🖥️  PRESENTATION LAYER                      │
+│              HTML5 • CSS3 (Responsive) • Vanilla JS             │
+├─────────────────────────────────────────────────────────────────┤
+│                    ⚙️  APPLICATION LAYER                         │
+│       PHP 8.1+ (Strict Typing) • PDO Database Abstraction       │
+├─────────────────────────────────────────────────────────────────┤
+│                      🗄️  DATA LAYER                              │
+│          MySQL 5.7+ • Foreign Keys • ACID Compliance            │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+</div>
+
+<br>
+
+| Layer | Technology | Features |
+|:-----:|:-----------|:---------|
+| 🎨 **Frontend** | HTML5, CSS3, JavaScript | Custom responsive design, Modern UI |
+| 🔧 **Backend** | PHP 8.1+ | Strict typing, Prepared statements |
+| 🗃️ **Database** | MySQL 5.7+ | Relational schema, ACID compliance |
+| 🔐 **Security** | Session Management | SQL injection protection, Role-based access |
 
 ---
 
 ## 🚀 Getting Started
 
-### Prerequisites
-*   A localized server environment (XAMPP, WAMP, or Laragon).
-*   PHP 8.0 or higher.
-*   MySQL/MariaDB.
+### 📋 Prerequisites
 
-### Installation
-1.  **Clone the Repository**:
-    Place the `ams_project` folder into your web server's root directory (e.g., `htdocs` or `www`).
-    ```bash
-    git clone https://github.com/MIR39X/Automotive-Management-System.git
-    ```
+Before you begin, ensure you have the following installed:
 
-2.  **Configure Database**:
-    *   Create a new database named `ams_db` in phpMyAdmin or your SQL client.
-    *   Import the schema logic (Tables for `vehicle`, `customer`, `purchase`, `jobcard`, `parts`, etc.) or verify `includes/db.php` connects successfully.
+| Requirement | Version | Download |
+|:------------|:--------|:---------|
+| 🌐 Web Server | XAMPP, WAMP, or Laragon | [XAMPP](https://www.apachefriends.org/) |
+| 🐘 PHP | 8.0 or higher | Included with XAMPP |
+| 🐬 MySQL | 5.7 or higher | Included with XAMPP |
 
-3.  **Setup Configuration**:
-    Open `includes/header.php` and verify the base path matches your folder name:
-    ```php
-    $base = '/ams_project'; // Adjust if you renamed the folder
-    ```
+---
 
-4.  **Launch**:
-    Visit `http://localhost/ams_project/public/login.php`.
-    *   **Default Admin Credentials**: `admin` / `admin123`
+### ⚡ Installation
+
+<details>
+<summary><b>📥 Step 1: Clone the Repository</b></summary>
+<br>
+
+Place the project folder into your web server's root directory (e.g., `htdocs` or `www`):
+
+```bash
+# Clone via HTTPS
+git clone https://github.com/MIR39X/Automotive-Management-System.git
+
+# Navigate to project
+cd Automotive-Management-System
+```
+
+</details>
+
+<details>
+<summary><b>🗄️ Step 2: Configure Database</b></summary>
+<br>
+
+1. Start **Apache** and **MySQL** in XAMPP Control Panel
+2. Open [phpMyAdmin](http://localhost/phpmyadmin)
+3. Create a new database:
+   ```sql
+   CREATE DATABASE ams_db;
+   ```
+4. Import the schema (tables: `vehicle`, `customer`, `purchase`, `jobcard`, `parts`, etc.)
+
+</details>
+
+<details>
+<summary><b>⚙️ Step 3: Setup Configuration</b></summary>
+<br>
+
+Edit `includes/header.php` and verify the base path:
+
+```php
+$base = '/ams_project';  // Adjust if you renamed the folder
+```
+
+</details>
+
+<details>
+<summary><b>🚀 Step 4: Launch Application</b></summary>
+<br>
+
+Open your browser and navigate to:
+
+```
+http://localhost/ams_project/public/login.php
+```
+
+**Default Credentials:**
+| Username | Password |
+|:---------|:---------|
+| `admin` | `admin123` |
+
+</details>
 
 ---
 
 ## 📂 Project Structure
-```text
+
+```
 ams_project/
-├── assets/             # CSS styles, Uploaded Images
-├── includes/           # Database config, Header, Footer
-├── public/             # Application Pages
-│   ├── vehicles/       # Vehicle CRUD
-│   ├── customers/      # Customer CRM
-│   ├── jobcards/       # Workshop Workflow
-│   ├── retailsales/    # Parts POS
-│   └── ...             # Other modules (Employees, Parts, etc.)
-└── README.md           # Project Documentation
+│
+├── 📁 assets/                  # Static resources
+│   ├── 📁 css/                 # Stylesheets
+│   │   ├── style.css           # Global styles
+│   │   └── index.css           # Homepage styles
+│   ├── 📁 uploads/             # User-uploaded images
+│   ├── banner.png              # README banner
+│   └── logo.png                # Application logo
+│
+├── 📁 includes/                # Shared PHP components
+│   ├── db.php                  # Database configuration
+│   ├── header.php              # Header template
+│   └── footer.php              # Footer template
+│
+├── 📁 public/                  # Application pages
+│   ├── 📁 vehicles/            # 🚗 Vehicle CRUD operations
+│   ├── 📁 customers/           # 👥 Customer CRM module
+│   ├── 📁 employees/           # 👨‍💼 Employee management
+│   ├── 📁 jobcards/            # 🔧 Workshop job cards
+│   ├── 📁 parts/               # ⚙️ Parts inventory
+│   ├── 📁 services/            # 🛠️ Service catalog
+│   ├── 📁 suppliers/           # 📦 Supplier management
+│   ├── 📁 retailsales/         # 💳 POS system
+│   ├── index.php               # Main dashboard
+│   ├── login.php               # Authentication
+│   └── logout.php              # Session termination
+│
+└── README.md                   # 📖 Documentation
 ```
 
 ---
 
-*This project was submitted as a final semester project for the Database Management Systems course.*
+## 🎨 Screenshots
+
+<div align="center">
+
+| Dashboard | Vehicle Inventory |
+|:---------:|:-----------------:|
+| *Live stats and inventory overview* | *Full vehicle lifecycle management* |
+
+| Service Center | Customer CRM |
+|:--------------:|:------------:|
+| *Job card tracking system* | *360° customer profiles* |
+
+</div>
+
+> 📸 *Screenshots coming soon*
+
+---
+
+## 🤝 Contributing
+
+Contributions are what make the open source community amazing! Any contributions you make are **greatly appreciated**.
+
+1. **Fork** the repository
+2. **Create** your feature branch (`git checkout -b feature/AmazingFeature`)
+3. **Commit** your changes (`git commit -m 'Add AmazingFeature'`)
+4. **Push** to the branch (`git push origin feature/AmazingFeature`)
+5. **Open** a Pull Request
+
+---
+
+## 👨‍💻 Authors
+
+<div align="center">
+
+| Developer | Roll Number |
+|:---------:|:-----------:|
+| **Team Lead** | 23K2013 |
+| **Developer** | 23K2085 |
+
+</div>
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- 📚 Semester project for **Database Management Systems** course
+- 🏫 Developed with passion and dedication
+- 🎓 Special thanks to our instructors and mentors
+
+---
+
+<div align="center">
+
+### ⭐ Star this repo if you find it helpful!
+
+<br>
+
+[![GitHub stars](https://img.shields.io/github/stars/MIR39X/Automotive-Management-System?style=social)](https://github.com/MIR39X/Automotive-Management-System/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/MIR39X/Automotive-Management-System?style=social)](https://github.com/MIR39X/Automotive-Management-System/network/members)
+[![GitHub watchers](https://img.shields.io/github/watchers/MIR39X/Automotive-Management-System?style=social)](https://github.com/MIR39X/Automotive-Management-System/watchers)
+
+<br>
+
+**Made with ❤️ for the automotive industry**
+
+</div>
